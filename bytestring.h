@@ -9,12 +9,13 @@ struct bytestring_t {
     char *data;
 };
 
-ByteString allocByteString(size_t n);
-ByteString initByteString(size_t n);
-ByteString makeByteString(const char *str, const size_t len)
+ByteString allocByteString(const size_t n);
+ByteString initByteString(const size_t n);
+ByteString makeByteString(const char *str, const size_t len);
+ByteString constByteString(const char *str);
 ByteString cropByteString(ByteString str);
 ByteString freeByteString(ByteString str);
-ByteString extendByteString(ByteString str, size_t n);
+ByteString extendByteString(ByteString str, const size_t n);
 int compByteString(ByteString str1, ByteString str2);
 void printByteString(ByteString str);
 void printlnByteString(ByteString str);

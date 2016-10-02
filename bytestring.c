@@ -7,7 +7,7 @@
 //(null文字除いて)n文字分の領域を確保する
 //sizeには格納できる文字数(n)が保存される
 //安全のため、先頭と末尾にはnull文字が代入される
-ByteString allocByteString(size_t n)
+ByteString allocByteString(const size_t n)
 {
     ByteString ret = (ByteString)malloc(sizeof(struct bytestring_t));
 
@@ -19,7 +19,7 @@ ByteString allocByteString(size_t n)
     return ret;
 }
 
-ByteString initByteString(size_t n)
+ByteString initByteString(const size_t n)
 {
     ByteString ret = (ByteString)malloc(sizeof(struct bytestring_t));
 
@@ -29,12 +29,17 @@ ByteString initByteString(size_t n)
     return ret;
 }
 
-ByteString makeByteString(const char *str)
+ByteString makeByteString(const char *str, const size_t len)
 {
-    size_t len = strlen(str);
+    //size_t len = strlen(str);
     ByteString ret = allocByteString(len + 1);
     strncpy(ret->data, str, len);
     return ret;
+}
+
+ByteString constByteString(const char *str)
+{
+    return makeByteString(str, strlen(str));
 }
 
 ByteString cropByteString(ByteString str)
@@ -61,7 +66,7 @@ ByteString freeByteString(ByteString str)
 }
 
 //n文字分増やす
-ByteString extendByteString(ByteString str, size_t n)
+ByteString extendByteString(ByteString str, const size_t n)
 {
     char *buf = (char *)realloc(str->data, str->size + n + 1);
     if (buf == NULL) {
