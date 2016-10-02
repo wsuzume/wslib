@@ -69,13 +69,27 @@ if (str->data[str->size] == '\0') {
 str = eraseByteString(str);
 ```
 
-もしもこのputs関数が実行されないようにデータを改変すると,wslibの関数群はバッファオーバーランを引き起こす可能性があります.
+もしもこのputs関数が実行されないようにデータを改変するとwslibの関数群はバッファオーバーランを引き起こす可能性があります.
 ご自分でこの文字列型を操作する関数を実装するときは十分に注意してください.
+
+文字列の生成は主に以下のいずれかの方法で行います.
+
+```
+ByteString str1 = allocByteString(n);     //n文字(+ヌル文字1文字)分の領域を生成. 先頭と末尾に'\0'を代入.
+ByteString str2 = initByteString(n);      //n文字(+ヌル文字1文字)分の領域を生成. 全体を'\0'で初期化.
+ByteString str3 = makeByteString(str, n); //(const char *)strの先頭からn文字をコピーして生成.
+ByteString str4 = constByteString(str);   //(const char *)strの全体をコピーして生成.
+ByteString str5 = cropByteString(str);    //(ByteString)strの全体をコピーして生成.
+```
+
+他にもファイルや標準入力から生成する便利な関数があります.
+詳細はwikiを参照し用途に応じて適宜使い分けてください.
+
 `eraseByteString`関数は必ず`NULL`を返却します. 一方で引数に`NULL`を与えても何もしないため,
 `eraseByteString`関数の結果を,削除した文字列自身に代入することでメモリの二重解放を防ぐことができます.
 つまり `str = eraseByteString(str);` という式は何度実行してもエラーにはなりません.
-しかしもしも一度イレースした文字列をもう一度イレースすると,メモリの二重解放によってプログラムはクラッシュします.
-`eraseByteString(str);` という式は二回目の実行でクラッシュするので注意してください.
+しかしもしも一度イレースした文字列をもう一度イレースするとメモリの二重解放によってプログラムはクラッシュします.
+結果を代入しない `eraseByteString(str);` だけの式は二回目の実行でクラッシュするので注意してください.
 
 `eraseByteString`関数はポインタを意識させないためにこのような設計になっています.
 もしもポインタを使うことの煩雑さが苦でないなら`freeByteString`関数を使用して解放するのもよいでしょう.
@@ -90,7 +104,14 @@ void freeByteString(ByteString *str)
 ```
 
 `freeByteString(&str);`という式は何度実行してもエラーにはなりません.
-もっとも注意すべき事項は以上です. 定義された関数群と使用方法に関しては wiki を参照してください.
+つまり文字列の破棄は以下のどちらかの方法で行うことが強く推奨されます.
+
+```
+str = eraseByteString(str);
+freeByteString(&str);
+```
+
+もっとも注意すべき事項は以上です. この他に定義された関数群と使用方法に関しては wiki を参照してください.
 
 ## Pair
 uintptr\_t型の二つ組のタプルです.
