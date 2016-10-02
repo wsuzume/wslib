@@ -67,7 +67,6 @@ if (str->data[str->size] == '\0') {
 }
 
 str = eraseByteString(str);
-
 ```
 
 もしもこのputs関数が実行されないようにデータを改変すると,wslibの関数群はバッファオーバーランを引き起こす可能性があります.
