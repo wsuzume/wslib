@@ -55,7 +55,7 @@ ByteString cropByteString(ByteString str)
     return ret;
 }
 
-ByteString freeByteString(ByteString str)
+ByteString eraseByteString(ByteString str)
 {
     if (str != NULL) {
         free(str->data);
@@ -63,6 +63,13 @@ ByteString freeByteString(ByteString str)
     }
 
     return NULL;
+}
+
+void freeByteString(ByteString *str)
+{
+    if (str == NULL) return;
+    if (*str != NULL) *str = eraseByteString(*str);
+    return; 
 }
 
 //n文字分増やす
@@ -170,14 +177,14 @@ ByteString getLine(ByteString *dest, FILE *fp)
     for (i = 0 ;; i++) {
         if (i >= buf->size) {
             if (extendByteString(buf, bufsize + 1) == NULL) {
-                freeByteString(buf);
+                eraseByteString(buf);
                 return NULL;
             }
         }
 
         c = fgetc(fp);
         if (c == EOF) {
-            freeByteString(buf);
+            eraseByteString(buf);
             return NULL;
         }
 
@@ -191,7 +198,7 @@ ByteString getLine(ByteString *dest, FILE *fp)
 
     if (dest == NULL) {
         //読み捨て
-        freeByteString(buf);
+        eraseByteString(buf);
         return NULL;
     }
 
@@ -201,7 +208,7 @@ ByteString getLine(ByteString *dest, FILE *fp)
     } else {
         //結合
         appendByteString(*dest, buf->data, strlen(buf->data));
-        freeByteString(buf);
+        eraseByteString(buf);
     }
 
     return *dest;
